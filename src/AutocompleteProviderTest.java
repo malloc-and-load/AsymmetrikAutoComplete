@@ -1,8 +1,14 @@
 
 import org.junit.jupiter.api.*;
 import java.util.*;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+/*
+* Unit Tests for Asymmetrik AutocompleteProvider using jUnit
+*
+* Still need solutions for automatically checking equivalency of Candidate lists
+* and for handling non-alphabet characters.
+ */
 
 class AutocompleteProviderTest {
     AutocompleteProvider testACP;
@@ -21,15 +27,15 @@ class AutocompleteProviderTest {
 
     @Test
     public void itShouldReturnAnEmptyListWhenFragmentIsEmpty(){
-        List<Candidate> candidates = testACP.getWords("");
-        List<Candidate> emptyTestList = new ArrayList<>();
+        ArrayList<Candidate> candidates = testACP.getWords("");
+        ArrayList<Candidate> emptyTestList = new ArrayList<>();
         assertEquals(emptyTestList, candidates);
     }
 
     @Test void itShouldReturnAnEmptyListWhenFragmentCharacterPointsToNullTrieNode() {
         testTrie.insertWord("the");
-        List<Candidate> candidates = testACP.getWords("thy");
-        List<Candidate> emptyTestList = new ArrayList<>();
+        ArrayList<Candidate> candidates = testACP.getWords("thy");
+        ArrayList<Candidate> emptyTestList = new ArrayList<>();
         assertEquals(emptyTestList, candidates);
     }
 
@@ -111,7 +117,7 @@ class AutocompleteProviderTest {
     public void itShouldStringifyTheStringBuilderAndCreateNewCandidateWhenIsEndOFWord() {
         testTrie.insertWord("need");
 
-        List<Candidate> candidates = testACP.getWords("nee");
+        ArrayList<Candidate> candidates = testACP.getWords("nee");
 
         assertEquals("need", candidates.get(0).getWord());
 
@@ -129,11 +135,6 @@ class AutocompleteProviderTest {
     }
 
     @Test
-    public void itShouldHandleNonAlphanumericCharacters() {
-
-    }
-
-    @Test
     public void itShouldIncrementUsageCountAtEndOfWordEachTimeWordIsInserted() {
         testTrie.insertWord("t");
         testTrie.insertWord("t");
@@ -141,21 +142,21 @@ class AutocompleteProviderTest {
         TrieNode tNode = testRoot.getChildAt('t');
         assertEquals(3, tNode.getUsageCount());
     }
-    @Test
-    public void asymmetrik1 () {
-        String trainer = "The third thing that I need to tell you is that this thing does not think thoroughly.";
-        testACP.train(trainer);
-        List<Candidate> testList = testACP.getWords("thi");
-        List<Candidate> expectedList = new ArrayList<>();
-        Candidate testThing = new Candidate("thing", 2);
-        expectedList.add(testThing);
-        Candidate testThink = new Candidate("think", 1);
-        expectedList.add(testThink);
-        Candidate testThird = new Candidate("third", 1);
-        expectedList.add(testThird);
-        Candidate testThis = new Candidate("this", 1);
-        expectedList.add(testThis);
 
+    @Test
+    public void itShouldHandleNonAlphabeticalCharacters() {
+       // Is there a way to use regex to preserve contractions, hyphens, abbreviations?
+        fail("@TODO");
+
+    }
+
+    @Test
+    public void itShouldReturnCandidatesThatAreNonLeafNodes() {
+        testACP.train("Al, alexandra and alex all got along.");
+        ArrayList<Candidate> testList = testACP.getWords("al");
+        ArrayList<Candidate> expectedList = new ArrayList<>();
+        // Passes through user interface, but still need to automate
+        fail("Needs proper assert to check equivalency of lists");
     }
     @AfterEach
     void tearDown() {
